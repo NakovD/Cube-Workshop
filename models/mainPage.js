@@ -2,16 +2,9 @@ const fs = require('fs');
 const path = require('path');
 const pathDB = path.join(__dirname, '../config/database.json');
 
-const getAllCubes =  () => {
-    fs.readFile(pathDB, (err,data) => {
-        if (err) {
-            throw(err);
-        }
-        const allCubes = JSON.parse(data);
-        
-    });
+const getAllCubes = () => {
+    const allCubes = fs.readFileSync(pathDB);
+    return JSON.parse(allCubes);
 }
-// console.log(getAllCubes());
-
 
 module.exports = getAllCubes;
