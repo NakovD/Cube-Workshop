@@ -9,7 +9,7 @@ module.exports = (app) => {
 
     app.use('/create',createCubeController);
 
-    app.use('/',detailsController);
+    app.use('/details/',detailsController);
 
     app.use('/about',aboutController);
 
