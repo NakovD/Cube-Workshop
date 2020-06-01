@@ -1,9 +1,13 @@
 const fs = require('fs');
-const path = require('path');
-const pathDB = path.join(__dirname, '../config/database.json');
+const { pathDB } = require('./cube.js');
+const util = require('util');
 
-const getAllCubes = () => {
-    const allCubes = fs.readFileSync(pathDB);
+const readFile = util.promisify(fs.readFile);
+
+
+const getAllCubes = async () => {
+    const allCubes = await readFile(pathDB);
+    // debugger;
     return JSON.parse(allCubes);
 }
 
