@@ -1,18 +1,18 @@
 const express = require('express');
 const router = express.Router();
-const cubeDispenser = require('../models/cube.js');
+const { Cube, pathDB } = require('../models/cube.js');
 
-router.get('/',(req,res) => {
+router.get('/', (req, res) => {
     res.render('create');
 });
 
-router.post('/',(req,res) => {
-    const {name,
+router.post('/', (req, res) => {
+    const { name,
         description,
         imageUrl,
         difficultyLevel
     } = req.body;
-    const newCube = new cubeDispenser(name,description,imageUrl,difficultyLevel);
+    const newCube = new Cube(name, description, imageUrl, difficultyLevel);
     newCube.save();
     res.redirect('/');
 });
