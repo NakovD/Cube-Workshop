@@ -1,7 +1,7 @@
 const { v4 } = require('uuid');
-const fs = require('fs');
-const path = require('path');
-const pathDB = path.join(__dirname, '../config/database.json');
+const { readDB } = require('./dbOperations.js');
+const { writeInDB } = require('./dbOperations.js');
+
 class Cube {
     constructor(name, description, imageURL, diffLvl) {
         this.id = v4();
@@ -10,7 +10,7 @@ class Cube {
         this.imageURL = imageURL;
         this.diffLvl = diffLvl;
     }
-    save() {
+    async save() {
         const currentCube = {
             id: this.id,
             name: this.name,
@@ -18,20 +18,10 @@ class Cube {
             imageURL: this.imageURL,
             diffLvl: this.diffLvl
         }
-        fs.readFile(pathDB, (err, cubesDB) => {
-            if (err) {
-                throw (err);
-            }
-            const allCubes = JSON.parse(cubesDB);
-            allCubes.push(currentCube);
-
-            fs.writeFile(pathDB, JSON.stringify(allCubes), () => console.log('Cube successfully created!'));
-        });
-
+        const allCubes = await readDB();
+        allCubes.push(currentCube);
+        writeInDB(allCubes);
     }
 }
 
-module.exports = {
-    Cube,
-    pathDB
-};
+module.exports = Cube;

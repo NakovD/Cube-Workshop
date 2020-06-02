@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { Cube, pathDB } = require('../models/cube.js');
+const Cube = require('../models/cube.js');
 
 router.get('/', (req, res) => {
     res.render('create');

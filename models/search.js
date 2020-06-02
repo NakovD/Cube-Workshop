@@ -1,11 +1,7 @@
-const fs = require('fs');
-const { pathDB } = require('./cube.js');
-const util = require('util');
-
-const readFile = util.promisify(fs.readFile);
+const { readDB } = require('./dbOperations.js');
 
 const search = async (_name, _min, _max) => {
-    const allCubes = JSON.parse(await readFile(pathDB));
+    const allCubes = await readDB();
     const name = _name;
     const min = +_min || 1;
     const max = +_max || 100;
