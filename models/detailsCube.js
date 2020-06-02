@@ -1,16 +1,8 @@
-const fs = require('fs');
-const { pathDB } = require('./cube.js');
-const util = require('util');
+const { readDB } = require('./dbOperations.js');
 
-const readFile = util.promisify(fs.readFile);
 const getCubeInfo = async (id) => {
-    const allCube = await readFile(pathDB, (err, data) => {
-        if (err) {
-            throw (err);
-        }
-        return JSON.parse(data);
-    });
-    const neededCube = JSON.parse(allCube).find(el => el.id === id);
+    const allCubes = await readDB();
+    const neededCube = allCubes.find(el => el.id === id);
     return neededCube;
 }
 
