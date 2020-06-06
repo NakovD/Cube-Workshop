@@ -6,14 +6,19 @@ router.get('/', (req, res) => {
     res.render('create');
 });
 
-router.post('/', (req, res) => {
+router.post('/', async (req, res) => {
     const { name,
         description,
         imageUrl,
         difficultyLevel
     } = req.body;
-    const newCube = new Cube(name, description, imageUrl, difficultyLevel);
-    newCube.save();
+    const newCube = new Cube({ name, description, imageURL: imageUrl, diffLvl: difficultyLevel });
+    await newCube.save(function (err) {
+        if (err) {
+            console.error(err);
+        }
+        console.log('Cube successfully added to DB!');
+    });
     res.redirect('/');
 });
 

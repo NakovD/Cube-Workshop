@@ -1,27 +1,15 @@
-const { v4 } = require('uuid');
-const { readDB } = require('./dbOperations.js');
-const { writeInDB } = require('./dbOperations.js');
+const mongoose = require('mongoose');
 
-class Cube {
-    constructor(name, description, imageURL, diffLvl) {
-        this.id = v4();
-        this.name = name;
-        this.description = description;
-        this.imageURL = imageURL;
-        this.diffLvl = diffLvl;
-    }
-    async save() {
-        const currentCube = {
-            id: this.id,
-            name: this.name,
-            description: this.description,
-            imageURL: this.imageURL,
-            diffLvl: this.diffLvl
-        }
-        const allCubes = await readDB();
-        allCubes.push(currentCube);
-        writeInDB(allCubes);
-    }
-}
+const Cube = new mongoose.Schema({
+    name: { type: String, required: true },
+    description: { type: String, required: true, maxlength: 250 },
+    imageURL: { type: String, required: true },
+    diffLvl: { type: Number, required: true, min: 1, max: 6 },
+    accessories: [{ type: 'ObjectId', ref: 'Accessory' }]
+});
 
-module.exports = Cube;
+Cube.path('imageURL').validate(function (value) {
+    return value.startsWith('http://') || value.startsWith('https://');
+}, 'Image url is invalid!');
+
+module.exports = mongoose.model('Cube', Cube);
