@@ -1,11 +1,11 @@
 const express = require('express');
 const router = express.Router();
-const getCubeInfo = require('../models/detailsCube.js');
+const Cube = require('../models/cube.js');
 
-router.get('/:id',async (req,res) => {
-    const neededCube = req.params.id;
-    const cubeInfo = await getCubeInfo(neededCube);
-    res.render('details',{cube:cubeInfo});
+router.get('/:id', async (req, res) => {
+    const neededCubeID = req.params.id;
+    const cubeInfo = await Cube.findById(neededCubeID).lean();
+    res.render('details', { cube: cubeInfo });
 });
 
 module.exports = router;

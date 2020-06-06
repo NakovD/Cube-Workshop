@@ -12,6 +12,4 @@ module.exports = (app) => {
 
     app.use('/static', express.static('static'));
 
-
-
 };
