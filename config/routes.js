@@ -4,6 +4,7 @@ const detailsController = require('../controllers/details.js');
 const aboutController = require('../controllers/about.js');
 const errorPageController = require('../controllers/error.js');
 const createAccesoryController = require('../controllers/createAccesory.js');
+const attachAccessoryController = require('../controllers/attachAccessory.js');
 
 module.exports = (app) => {
     app.use('/', homePageController);
@@ -15,6 +16,8 @@ module.exports = (app) => {
     app.use('/about', aboutController);
 
     app.use('/create/accessory', createAccesoryController);
+
+    app.use('/attach/accessory/', attachAccessoryController);
 
     app.use('*', errorPageController);
 };
