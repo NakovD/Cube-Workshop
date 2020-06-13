@@ -5,6 +5,8 @@ const aboutController = require('../routes/other.js');
 const errorPageController = require('../routes/other.js');
 const createAccesoryController = require('../routes/accessory.js');
 const attachAccessoryController = require('../routes/accessory.js');
+const logInHandler = require('../routes/auth.js');
+const registerHandler = require('../routes/auth.js');
 
 module.exports = (app) => {
     app.use('/', homePageController);
@@ -18,6 +20,10 @@ module.exports = (app) => {
     app.use('/', createAccesoryController);
 
     app.use('/', attachAccessoryController);
+
+    app.use('/', logInHandler);
+
+    app.use('/', registerHandler);
 
     app.use('*', errorPageController);
 };

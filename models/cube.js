@@ -5,6 +5,7 @@ const Cube = new mongoose.Schema({
     description: { type: String, required: true, maxlength: 250 },
     imageURL: { type: String, required: true },
     diffLvl: { type: Number, required: true, min: 1, max: 6 },
+    creatorId: { type: String, required: true },
     accessories: [{ type: 'ObjectId', ref: 'Accessory' }]
 });
 
