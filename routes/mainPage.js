@@ -1,20 +1,20 @@
 const express = require('express');
 const router = express.Router();
 const Cube = require('../models/cube.js');
-const searchFunc = require('../models/search.js');
+const { search } = require('../controllers/DBOperations.js');
 
 router.get('/', async (req, res) => {
     const allCubes = await Cube.find().lean();
-    res.render('homePage', { cubes:allCubes });
+    res.render('homePage', { cubes: allCubes });
 });
 
 router.post('/', async (req, res) => {
     const {
-        search,
+        name,
         from,
         to
     } = req.body;
-    const result = await searchFunc(search, from, to);
+    const result = await search(name, from, to);
     if (result.length === 0) {
         res.redirect('/');
         return;
