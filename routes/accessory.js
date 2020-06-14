@@ -4,14 +4,17 @@ const Cube = require('../models/cube.js');
 const Accessory = require('../models/accessory.js');
 const { freeAccessoriesFunc } = require('../controllers/DBOperations.js');
 const { updateCubeAndAccessory } = require('../controllers/DBOperations.js');
+const { authenticate } = require('../controllers/auth.js');
 
 
 //createAccessory logic
-router.get('/create/accessory', (req, res) => {
-    res.render('createAccessory');
+router.get('/create/accessory', authenticate, (req, res) => {
+    res.render('createAccessory', {
+        isLoggedIn: req.isLoggedIn,
+    });
 });
 
-router.post('/create/accessory', async (req, res) => {
+router.post('/create/accessory', authenticate, async (req, res) => {
     const {
         name,
         imageUrl,
@@ -28,7 +31,7 @@ router.post('/create/accessory', async (req, res) => {
 });
 
 //attachAccessory Logic
-router.get('/attach/accessory/:id', async (req, res) => {
+router.get('/attach/accessory/:id', authenticate, async (req, res) => {
     const cubeId = req.params.id;
     const cubeInfo = await Cube.findById(cubeId).lean();
     const allAccessories = await Accessory.find();
@@ -37,11 +40,12 @@ router.get('/attach/accessory/:id', async (req, res) => {
     res.render('attachAccessory', {
         cube: cubeInfo,
         accessories: freeAccessories,
-        accessoryCheck
+        accessoryCheck,
+        isLoggedIn: req.isLoggedIn,
     });
 });
 
-router.post('/attach/accessory/:id', async (req, res) => {
+router.post('/attach/accessory/:id', authenticate, async (req, res) => {
     const cubeID = req.params.id;
     const accessoryID = req.body.accessory;
     const updateDB = await updateCubeAndAccessory(cubeID, accessoryID);
