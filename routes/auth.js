@@ -3,7 +3,8 @@ const router = express.Router();
 const User = require('../models/user.js');
 const {
     register,
-    logIn } = require('../controllers/auth.js');
+    logIn,
+} = require('../controllers/auth.js');
 
 router.get('/register', (req, res) => {
     res.render('registerPage');
@@ -19,6 +20,11 @@ router.get('/logIn', (req, res) => {
 
 router.post('/logIn', async (req, res) => {
     const logInUser = await logIn(req, res);
+});
+
+router.get('/logOut', (req, res) => {
+    res.clearCookie('aid');
+    res.redirect('/');
 });
 
 module.exports = router;

@@ -44,7 +44,7 @@ const register = async (req, res) => {
             username: newUser.username,
         });
 
-        res.cookie('uid', token);
+        res.cookie('aid', token);
 
         res.redirect('/');
     });
@@ -76,11 +76,53 @@ const logIn = async (req, res) => {
 
     console.log('User successfully logged in!');
 
-    res.cookie('uid', token);
+    res.cookie('aid', token);
     res.redirect('/');
 }
 
+const authenticate = (req, res, next) => {
+    const token = req.cookies['aid'];
+    if (!token) {
+        req.isLoggedIn = false;
+        res.redirect('/');
+        return;
+    }
+    try {
+        const verification = jwt.verify(token, privateKey);
+        req.isLoggedIn = true;
+        next();
+    } catch (error) {
+        console.error(error);
+        res.redirect('/');
+    }
+}
+
+const getCreatorId = (token) => {
+    const decodedToken = jwt.verify(token, privateKey);
+
+    return decodedToken;
+}
+
+const userStatusCheck = (req, res, next) => {
+    const token = req.cookies['aid'];
+    if (!token) {
+        req.isLoggedIn = false;
+    }
+    try {
+        const verification = jwt.verify(token, privateKey);
+        req.isLoggedIn = true;
+    } catch (error) {
+        req.isLoggedIn = false;
+    }
+    next();
+}
+
+
+
 module.exports = {
     register,
-    logIn
+    logIn,
+    authenticate,
+    userStatusCheck,
+    getCreatorId
 };
