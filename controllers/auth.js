@@ -3,6 +3,7 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const privateKey = require('../config/config.js').development.privateKey;
 const saltRounds = 10;
+const Cube = require('../models/cube.js');
 
 const generateToken = data => {
     const token = jwt.sign(data, privateKey);
@@ -117,17 +118,32 @@ const userStatusCheck = (req, res, next) => {
     next();
 }
 
-const checkAuthorFunc = (cubeCreatorId, token) => {
+const checkAuthorFunc = async (req, res, next) => {
+    const token = req.cookies['aid'];
     if (!token) {
-        return false;
+        req.isAuthor = false;
+        next();
     }
-    const decodedToken = jwt.verify(token, privateKey);
-    if (cubeCreatorId === decodedToken.userId) {
-        return true;
+    const cubeId = req.params.id;
+    const cube = await Cube.findById(cubeId);
+    try {
+        const decodedToken = jwt.verify(token, privateKey);
+        if (cube.creatorId === decodedToken.userId) {
+            req.isAuthor = true;
+            next();
+        } else {
+            if (req.url.includes('edit') || req.url.includes('delete')) {
+                res.redirect('/');
+                return;
+            }
+            next();
+        }
+    } catch (error) {
+        console.error(error);
+        req.isAuthor = false;
+        next();
     }
-    return false;
 }
-
 
 
 module.exports = {

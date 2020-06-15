@@ -36,35 +36,58 @@ router.post('/create', authenticate, async (req, res) => {
 });
 
 //details Single Cube Logic
-router.get('/details/:id', userStatusCheck, async (req, res) => {
+router.get('/details/:id', checkAuthorFunc, userStatusCheck, async (req, res) => {
     const neededCubeID = req.params.id;
     const cubeInfo = await Cube.findById(neededCubeID).lean().populate('accessories');
-    const token = req.cookies['aid'] || '';
-    const isAuthorCheck = checkAuthorFunc(cubeInfo.creatorId, token);
     res.render('details', {
         cube: cubeInfo,
         isLoggedIn: req.isLoggedIn,
-        isAuthor: isAuthorCheck
+        isAuthor: req.isAuthor
     });
 });
 
 //edit Cube;
-// router.get('/')
-//delete Cube
-router.get('/delete/:id', authenticate, async (req, res) => {
-    const neededCubeID = req.params.id;
-    const cubeInfo = await Cube.findById(neededCubeID).lean();
-    const cubeDiffString = cubeDiffText(cubeInfo.diffLvl);
-    cubeInfo.cubeDiffString = cubeDiffString;
-    res.render('deleteCubePage', {
+router.get('/edit/:id', authenticate, checkAuthorFunc, async (req, res) => {
+    const cubeId = req.params.id;
+    const cubeInfo = await Cube.findById(cubeId).lean();
+    res.render('editCubePage', {
+        isLoggedIn: req.isLoggedIn,
         cube: cubeInfo,
-        isLoggedIn: req.isLoggedIn
     });
 });
 
-router.post('/delete/:id', authenticate, async (req, res) => {
+router.post('/edit/:id', authenticate, checkAuthorFunc, async (req, res) => {
+    const {
+        name,
+        description,
+        imageUrl,
+        difficultyLevel,
+    } = req.body;
     const cubeId = req.params.id;
-    const removeCube = await Cube.deleteOne({_id: cubeId});
+    const updateCube = await Cube.findByIdAndUpdate({ _id: cubeId }, { name, description, imageURL: imageUrl, diffLvl: difficultyLevel }, (err) => {
+        if (err) {
+            console.log(err);
+            return;
+        }
+        console.log('Cube edited successfully!');
+    });
+    res.redirect('/');
+});
+
+//delete Cube
+router.get('/delete/:id', authenticate, checkAuthorFunc, async (req, res) => {
+    const neededCubeID = req.params.id;
+    const cubeInfo = await Cube.findById(neededCubeID).lean();
+    const moddedCube = cubeDiffText(cubeInfo);
+    res.render('deleteCubePage', {
+        cube: moddedCube,
+        isLoggedIn: req.isLoggedIn,
+    });
+});
+
+router.post('/delete/:id', authenticate, checkAuthorFunc, async (req, res) => {
+    const cubeId = req.params.id;
+    const removeCube = await Cube.deleteOne({ _id: cubeId });
     res.redirect('/');
 });
 

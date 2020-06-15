@@ -31,7 +31,7 @@ const search = async (_name, _min, _max) => {
     return allCubes;
 }
 
-const cubeDiffText = (cubeDiff) => {
+const cubeDiffText = (cube) => {
     const difficulties = {
         1: 'Very Easy',
         2: 'Easy',
@@ -40,10 +40,10 @@ const cubeDiffText = (cubeDiff) => {
         5: 'Expert',
         6: 'Hardcode'
     }
-    const currentCubeDiff = difficulties[cubeDiff];
-    return currentCubeDiff;
+    const moddedCubeInfo = cube;
+    moddedCubeInfo.cubeDiffString = difficulties[cube.diffLvl];
+    return moddedCubeInfo;
 }
-
 
 module.exports = {
     freeAccessoriesFunc,
