@@ -117,6 +117,17 @@ const userStatusCheck = (req, res, next) => {
     next();
 }
 
+const checkAuthorFunc = (cubeCreatorId, token) => {
+    if (!token) {
+        return false;
+    }
+    const decodedToken = jwt.verify(token, privateKey);
+    if (cubeCreatorId === decodedToken.userId) {
+        return true;
+    }
+    return false;
+}
+
 
 
 module.exports = {
@@ -124,5 +135,6 @@ module.exports = {
     logIn,
     authenticate,
     userStatusCheck,
-    getCreatorId
+    getCreatorId,
+    checkAuthorFunc
 };

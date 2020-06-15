@@ -22,7 +22,6 @@ const updateCubeAndAccessory = async (cubeID, accessoryID) => {
     }
 }
 
-
 //searchFunction for main Page;
 const search = async (_name, _min, _max) => {
     const name = _name;
@@ -32,9 +31,23 @@ const search = async (_name, _min, _max) => {
     return allCubes;
 }
 
+const cubeDiffText = (cubeDiff) => {
+    const difficulties = {
+        1: 'Very Easy',
+        2: 'Easy',
+        3: 'Medium(Standard 3x3)',
+        4: 'Intermidiate',
+        5: 'Expert',
+        6: 'Hardcode'
+    }
+    const currentCubeDiff = difficulties[cubeDiff];
+    return currentCubeDiff;
+}
+
 
 module.exports = {
     freeAccessoriesFunc,
     updateCubeAndAccessory,
-    search
+    search,
+    cubeDiffText
 };
