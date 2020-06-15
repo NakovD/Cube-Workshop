@@ -8,6 +8,7 @@ const attachAccessoryController = require('../routes/accessory.js');
 const registerHandler = require('../routes/auth.js');
 const logInHandler = require('../routes/auth.js');
 const logOutHandler = require('../routes/auth.js');
+const deleteCubeHandler = require('../routes/cube.js');
 
 module.exports = (app) => {
     app.use('/', homePageController);
@@ -27,6 +28,8 @@ module.exports = (app) => {
     app.use('/', registerHandler);
 
     app.use('/', logOutHandler);
+
+    app.use('/', deleteCubeHandler);
 
     app.use('*', errorPageController);
 };

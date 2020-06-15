@@ -4,7 +4,13 @@
   <p><span>Description:</span>{{cube.description}}</p>
   <p><span>Difficulty level:</span> {{cube.diffLvl}}</p>
   <a class="btn" href="/">Back</a>
-    <a class="btn" href="/attach/accessory/{{cube._id}}">Attach Accessory</a>
+  {{#if isLoggedIn}}
+  <a class="btn" href="/attach/accessory/{{cube._id}}">Attach Accessory</a>
+  {{#if isAuthor}}
+  <a class="btn" href="/edit/{{cube._id}}">Edit</a>
+  <a class="btn" href="/delete/{{cube._id}}">Delete</a>
+  {{/if}}
+  {{/if}}
 </div>
 <h2>Accessories</h2>
 <div class="accessories">
