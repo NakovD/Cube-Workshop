@@ -4,21 +4,22 @@ const User = require('../models/user.js');
 const {
     register,
     logIn,
+    userStatusCheck
 } = require('../controllers/auth.js');
 
-router.get('/register', (req, res) => {
+router.get('/register', userStatusCheck, (req, res) => {
     res.render('registerPage');
 });
 
-router.post('/register', async (req, res) => {
+router.post('/register', userStatusCheck, async (req, res) => {
     const registerUser = await register(req, res);
 });
 
-router.get('/logIn', (req, res) => {
+router.get('/logIn', userStatusCheck, (req, res) => {
     res.render('loginPage');
 });
 
-router.post('/logIn', async (req, res) => {
+router.post('/logIn', userStatusCheck, async (req, res) => {
     const logInUser = await logIn(req, res);
 });
 

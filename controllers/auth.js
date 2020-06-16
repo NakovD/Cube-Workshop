@@ -112,6 +112,11 @@ const userStatusCheck = (req, res, next) => {
     try {
         const verification = jwt.verify(token, privateKey);
         req.isLoggedIn = true;
+        if (req.url.includes('logIn') || req.url.includes('register')) {
+            console.log('here');
+            res.redirect('/');
+            return;
+        }
     } catch (error) {
         req.isLoggedIn = false;
     }
@@ -123,6 +128,7 @@ const checkAuthorFunc = async (req, res, next) => {
     if (!token) {
         req.isAuthor = false;
         next();
+        return;
     }
     const cubeId = req.params.id;
     const cube = await Cube.findById(cubeId);
