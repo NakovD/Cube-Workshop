@@ -13,6 +13,12 @@ router.get('/register', userStatusCheck, (req, res) => {
 
 router.post('/register', userStatusCheck, async (req, res) => {
     const registerUser = await register(req, res);
+    if (registerUser.error) {
+        res.render('registerPage',{
+            error: true,
+            errorMessage: registerUser.message
+        });
+    }
 });
 
 router.get('/logIn', userStatusCheck, (req, res) => {
@@ -21,6 +27,12 @@ router.get('/logIn', userStatusCheck, (req, res) => {
 
 router.post('/logIn', userStatusCheck, async (req, res) => {
     const logInUser = await logIn(req, res);
+    if (logInUser.error) {
+        res.render('loginPage', {
+            error: true,
+            errorMessage: logInUser.message
+        });
+    }
 });
 
 router.get('/logOut', (req, res) => {

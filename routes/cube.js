@@ -25,35 +25,54 @@ router.post('/create', authenticate, async (req, res) => {
     const token = req.cookies['aid'];
     const creatorId = getCreatorId(token).userId;
     const newCube = new Cube({ name, description, imageURL: imageUrl, diffLvl: difficultyLevel, creatorId });
-    await newCube.save(function (err) {
-        if (err) {
-            console.error(err);
-            return;
+    try {
+        const saveCubeInDB = await newCube.save();
+        res.redirect('/');
+    } catch (error) {
+        const allErrors = error.message.split(', ');
+        let errorMessage;
+        if (allErrors.length > 1) {
+            errorMessage = 'Invalid info!'
+        } else {
+            errorMessage = allErrors[0].split(': ')[2];
         }
-        console.log('Cube successfully added to DB!');
-    });
-    res.redirect('/');
+        res.render('create', {
+            isLoggedIn: req.isLoggedIn,
+            error: true,
+            errorMessage
+        });
+    }
+
 });
 
 //details Single Cube Logic
 router.get('/details/:id', checkAuthorFunc, userStatusCheck, async (req, res) => {
     const neededCubeID = req.params.id;
-    const cubeInfo = await Cube.findById(neededCubeID).lean().populate('accessories');
-    res.render('details', {
-        cube: cubeInfo,
-        isLoggedIn: req.isLoggedIn,
-        isAuthor: req.isAuthor
-    });
+    try {
+        const cubeInfo = await Cube.findById(neededCubeID).lean().populate('accessories');
+        res.render('details', {
+            cube: cubeInfo,
+            isLoggedIn: req.isLoggedIn,
+            isAuthor: req.isAuthor
+        });
+    } catch (error) {
+        res.render('somethWentWrongPage');
+    }
 });
 
 //edit Cube;
 router.get('/edit/:id', authenticate, checkAuthorFunc, async (req, res) => {
     const cubeId = req.params.id;
-    const cubeInfo = await Cube.findById(cubeId).lean();
-    res.render('editCubePage', {
-        isLoggedIn: req.isLoggedIn,
-        cube: cubeInfo,
-    });
+    try {
+        const cubeInfo = await Cube.findById(cubeId).lean();
+        res.render('editCubePage', {
+            isLoggedIn: req.isLoggedIn,
+            cube: cubeInfo,
+        });
+
+    } catch (error) {
+        res.render('somethWentWrongPage');
+    }
 });
 
 router.post('/edit/:id', authenticate, checkAuthorFunc, async (req, res) => {
@@ -77,18 +96,26 @@ router.post('/edit/:id', authenticate, checkAuthorFunc, async (req, res) => {
 //delete Cube
 router.get('/delete/:id', authenticate, checkAuthorFunc, async (req, res) => {
     const neededCubeID = req.params.id;
-    const cubeInfo = await Cube.findById(neededCubeID).lean();
-    const moddedCube = cubeDiffText(cubeInfo);
-    res.render('deleteCubePage', {
-        cube: moddedCube,
-        isLoggedIn: req.isLoggedIn,
-    });
+    try {
+        const cubeInfo = await Cube.findById(neededCubeID).lean();
+        const moddedCube = cubeDiffText(cubeInfo);
+        res.render('deleteCubePage', {
+            cube: moddedCube,
+            isLoggedIn: req.isLoggedIn,
+        });
+    } catch (error) {
+        res.render('somethWentWrongPage');
+    }
 });
 
 router.post('/delete/:id', authenticate, checkAuthorFunc, async (req, res) => {
     const cubeId = req.params.id;
-    const removeCube = await Cube.deleteOne({ _id: cubeId });
-    res.redirect('/');
+    try {
+        const removeCube = await Cube.deleteOne({ _id: cubeId });
+        res.redirect('/');
+    } catch (error) {
+        res.render('somethWentWrongPage');
+    }
 });
 
 module.exports = router;
