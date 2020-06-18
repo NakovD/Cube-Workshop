@@ -4,7 +4,7 @@ const Accessory = new mongoose.Schema({
     name: {
         type: String,
         required: true,
-        minlength: [5, 'Cube name must be at least 5 characters long!'],
+        minlength: [5, 'Accessory name must be at least 5 characters long!'],
         match: /[A-Za-z\d ]+/g
     },
     imageURL: {

@@ -7,6 +7,7 @@ const {
     userStatusCheck,
     checkAuthorFunc } = require('../controllers/auth.js');
 const { cubeDiffText } = require('../controllers/DBOperations.js');
+const failSavingInDB = require('../controllers/errorHandlers.js');
 
 
 //createCube Logic
@@ -29,17 +30,11 @@ router.post('/create', authenticate, async (req, res) => {
         const saveCubeInDB = await newCube.save();
         res.redirect('/');
     } catch (error) {
-        const allErrors = error.message.split(', ');
-        let errorMessage;
-        if (allErrors.length > 1) {
-            errorMessage = 'Invalid info!'
-        } else {
-            errorMessage = allErrors[0].split(': ')[2];
-        }
+        const errorMessage = failSavingInDB(error);
         res.render('create', {
             isLoggedIn: req.isLoggedIn,
             error: true,
-            errorMessage
+            errorMessage: errorMessage
         });
     }
 
@@ -83,14 +78,17 @@ router.post('/edit/:id', authenticate, checkAuthorFunc, async (req, res) => {
         difficultyLevel,
     } = req.body;
     const cubeId = req.params.id;
-    const updateCube = await Cube.findByIdAndUpdate({ _id: cubeId }, { name, description, imageURL: imageUrl, diffLvl: difficultyLevel }, (err) => {
-        if (err) {
-            console.log(err);
-            return;
-        }
-        console.log('Cube edited successfully!');
-    });
-    res.redirect('/');
+    try {
+        const updateCube = await Cube.findByIdAndUpdate({ _id: cubeId }, { name, description, imageURL: imageUrl, diffLvl: difficultyLevel });
+        res.redirect('/');
+    } catch (error) {
+        const errorMessage = failSavingInDB(error);
+        res.render('editCubePage', {
+            isLoggedIn: req.isLoggedIn,
+            error: true,
+            errorMessage: errorMessage
+        });
+    }
 });
 
 //delete Cube
