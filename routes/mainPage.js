@@ -9,11 +9,6 @@ router.get('/', userStatusCheck, async (req, res) => {
     res.render('homePage', {
         cubes: allCubes,
         isLoggedIn: req.isLoggedIn,
-    }, (err, html) => {
-        if (err) {
-            console.log(err);
-        }
-        res.send(html);
     });
 });
 
@@ -23,15 +18,20 @@ router.post('/', userStatusCheck, async (req, res) => {
         from,
         to
     } = req.body;
-    const result = await search(name, from, to);
-    if (result.length === 0) {
-        res.redirect('/');
-        return;
+    try {
+        const result = await search(name, from, to);
+        if (result.length === 0) {
+            res.redirect('/');
+            return;
+        }
+        res.render('homePage', {
+            cubes: result,
+            isLoggedIn: req.isLoggedIn
+        });
+        
+    } catch (error) {
+        res.render('somethWentWrongPage');
     }
-    res.render('homePage', {
-        cubes: result,
-        isLoggedIn: req.isLoggedIn
-    });
 });
 
 module.exports = router;

@@ -116,7 +116,7 @@ const logIn = async (req, res) => {
     }
 }
 
-const authenticate = (req, res, next) => {
+const authenticate =  (req, res, next) => {
     const token = req.cookies['aid'];
     if (!token) {
         req.isLoggedIn = false;
@@ -166,8 +166,8 @@ const checkAuthorFunc = async (req, res, next) => {
         return;
     }
     const cubeId = req.params.id;
-    const cube = await Cube.findById(cubeId);
     try {
+        const cube = await Cube.findById(cubeId);
         const decodedToken = jwt.verify(token, privateKey);
         if (cube.creatorId === decodedToken.userId) {
             req.isAuthor = true;

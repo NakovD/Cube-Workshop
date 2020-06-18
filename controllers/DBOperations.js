@@ -9,17 +9,13 @@ const freeAccessoriesFunc = async (cubeId) => {
 }
 
 const updateCubeAndAccessory = async (cubeID, accessoryID) => {
-    try {
-        const cubeUpdate = await Cube.findByIdAndUpdate(cubeID, {
-            $addToSet: { accessories: [accessoryID] }
-        });
-        const accessoryUpdate = await Accessory.findByIdAndUpdate(accessoryID, {
-            $addToSet: { cubes: [cubeID] }
-        });
+    const cubeUpdate = await Cube.findByIdAndUpdate(cubeID, {
+        $addToSet: { accessories: [accessoryID] }
+    });
+    const accessoryUpdate = await Accessory.findByIdAndUpdate(accessoryID, {
+        $addToSet: { cubes: [cubeID] }
+    });
 
-    } catch (error) {
-        console.log(error);
-    }
 }
 
 //searchFunction for main Page;

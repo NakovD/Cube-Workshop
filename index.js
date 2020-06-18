@@ -9,16 +9,18 @@ const app = express();
 require('./config/express')(app);
 require('./config/routes')(app);
 
+
 mongoose.connect(config.password, {
     useNewUrlParser: true,
     useUnifiedTopology: true
-}, (err) => {
+},(err) => {
     if (err) {
-        console.error(err);
-        throw (err);
+        console.log(err.message);
+        throw(err);
     }
-    console.log('DB is operational and running!');
+    console.log('DB is up and running!');
 });
+
 
 
 
