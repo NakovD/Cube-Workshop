@@ -7,6 +7,8 @@ npm install express for back-end services; More info here: https://www.npmjs.com
 
 npm install express-handlebars for template engine; More info here: https://www.npmjs.com/package/express-handlebars;
 
+npm install mongoose for DB services; More info here: https://www.npmjs.com/package/mongoose;
+
 npm install cookie-parser to use cookies; More info here: https://www.npmjs.com/package/cookie-parser;
 
 npm istall bcrypt for passwords; More info here: https://www.npmjs.com/package/bcrypt;
